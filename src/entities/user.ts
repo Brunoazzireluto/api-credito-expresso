@@ -21,13 +21,13 @@ import {
     @Column({ name: 'password_hash', length: 255 })
     password: string;
   
-    @CreateDateColumn({ name: 'create_date' })
+    @CreateDateColumn({ name: 'create_date', select: false })
     create_date: Date;
   
-    @UpdateDateColumn({ name: 'updated_date' })
+    @UpdateDateColumn({ name: 'updated_date', select: false })
     updated_date: Date;
   
-    @DeleteDateColumn({ name: 'deleted_date', nullable: true })
+    @DeleteDateColumn({ name: 'deleted_date', nullable: true,  select: false })
     deleted_date: Date;
   
     @OneToMany(() => Transaction, transaction => transaction.user)

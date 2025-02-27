@@ -19,13 +19,13 @@ export class LoginController {
       const user = await loginRepository.findByUsername(username);
       
       if (!user) {
-        return response.status(401).json({ error: 'Invalid credentials' });
+        return response.status(401).json({ error: 'Credenciais inválidas' });
       }
 
       const passwordMatch = await checkPassword(password, user.password);
 
       if (!passwordMatch) {
-        return response.status(401).json({ error: 'Invalid credentials' });
+        return response.status(401).json({ error: 'Credenciais inválidas' });
       }
         
       const token = sign(
@@ -49,13 +49,13 @@ export class LoginController {
     } catch (error) {
       if (error instanceof yup.ValidationError) {
         return response.status(400).json({
-          error: 'Validation error',
+          error: 'Erro de Validação',
           messages: error.errors
         });
       }
 
       return response.status(500).json({
-        error: 'Internal server error'
+        error: 'Erro interno do servidor'
       });
     }
   }

@@ -13,11 +13,9 @@ export const AppDataSource = new DataSource({
 export const initializeDatabase = async () => {
     try {
       await AppDataSource.initialize();
+      // await runSeeds(); // somente na primeiro init
       console.log('Data Source has been initialized!');
       
-      if (process.env.NODE_ENV === 'development') {
-        await runSeeds();
-      }
     } catch (error) {
       console.error('Error during Data Source initialization:', error);
       throw error;
@@ -32,7 +30,7 @@ export const initializeDatabase = async () => {
       
       console.log('Running seeds...');
       
-      const UserSeeder = require('./seeds/user.seed').default;
+      const UserSeeder = require('./seeds/user.ts').default;
       await new UserSeeder().run(AppDataSource);
       
       

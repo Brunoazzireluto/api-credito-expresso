@@ -1,2 +1,5 @@
+./src/database/database.sqlite
+src/database/database.sqlite
+database.sqlite
 node_modules
 .env

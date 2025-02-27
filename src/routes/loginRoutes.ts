@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import {LoginController} from '../controllers/loginController';
-// import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 
 const loginRouter = Router();
+const loginController = new LoginController();
 
-loginRouter.post('/',  new LoginController().login);
-// usersRouter.get('/', ensureAuthenticated, userController.index);
+
+loginRouter.post('/',  loginController.login.bind(loginController));
 
 export default loginRouter;

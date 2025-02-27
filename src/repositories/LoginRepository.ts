@@ -7,10 +7,7 @@ const userEntity = AppDataSource.getRepository(User);
 export class LoginRepository {
     async findByUsername(username: string) {
         try {
-            let user = await userEntity
-                .createQueryBuilder('user')
-                .where('user.username = :username', { username })
-                .getOne();
+            let user = await userEntity.findOne({ where: { username: username } });
             return user;
         } catch (error) {
             throw error;
