@@ -15,7 +15,7 @@ import {
     @PrimaryGeneratedColumn()
     id: number;
   
-    @Column({ type: 'float' })
+    @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
     amount: number;
   
     @Column({ length: 255 })
@@ -31,9 +31,9 @@ import {
     @CreateDateColumn({ name: 'create_date' })
     create_date: Date;
   
-    @UpdateDateColumn({ name: 'updated_date' })
+    @UpdateDateColumn({ name: 'updated_date', select:false })
     updated_date: Date;
   
-    @DeleteDateColumn({ name: 'deleted_date', nullable: true })
+    @DeleteDateColumn({ name: 'deleted_date', nullable: true, select:false })
     deleted_date: Date | null;
   }
