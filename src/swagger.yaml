@@ -1,0 +1,259 @@
+openapi: 3.0.0
+info:
+  title: API Credito-expresso
+  description: Teste Técnico para criação de uma API simples em Node.js com express para a empresa Crédito Expresso
+  version: 1.0.0
+
+servers:
+  - url: /api
+    description: Servidor de desenvolvimento
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+
+
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID da transação
+        amount:
+          type: number
+          description: Valor da transação
+        type:
+          type: string
+          description: Tipo da transação
+        user_id:
+          type: integer
+          description: ID do usuário associado
+        create_date:
+          type: string
+          format: date-time
+
+
+    TransactionCreate:
+      type: object
+      properties:
+        amount:
+          type: number
+          description: Valor da transação
+        type:
+          type: string
+          description: Tipo da transação
+        user_id:
+          type: integer
+          description: ID do usuário associado
+      required:
+        - amount
+        - type
+        - user_id
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Código do erro
+        message:
+          type: string
+          description: Mensagem descritiva do erro
+        details:
+          type: object
+          description: Detalhes adicionais do erro
+      required:
+        - code
+        - message
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Auth
+    description: Autenticação de usuários
+  - name: Transactions
+    description: Operações relacionadas a transações financeiras
+
+paths:
+  /login:
+    post:
+      tags:
+        - Auth
+      summary: Autenticar usuário
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: Nome do usuário
+                password:
+                  type: string
+                  description: Senha do usuário
+              required:
+                - username
+                - password
+            example:
+              username: "admin"
+              password: "123456"
+      responses:
+        '200':
+          description: Login realizado com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  token:
+                    type: string
+                    description: JWT Token para autenticação
+        '401':
+          description: Credenciais inválidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /transactions:
+    get:
+      summary: Lista todas as transações
+      security:
+        - bearerAuth: []
+      tags:
+        - Transactions
+      responses:
+        '200':
+          description: Lista de transações obtida com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Transaction'
+        '401':
+          description: Token não fornecido ou inválido
+    post:
+      summary: Cria uma nova transação
+      security:
+        - bearerAuth: []
+      tags:
+        - Transactions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionCreate'
+            example:
+              amount: -55.50
+              type: "pagamento"
+              user_id: 1
+      responses:
+        '201':
+          description: Transação criada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Transaction'
+
+  /transactions/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ID da transação
+    get:
+      summary: Obtém uma transação pelo ID
+      security:
+        - bearerAuth: []
+      tags:
+        - Transactions
+      responses:
+        '200':
+          description: Transação encontrada
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Transaction'
+    put:
+      summary: Atualiza uma transação existente
+      security:
+        - bearerAuth: []
+      tags:
+        - Transactions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionCreate'
+            example:
+              amount: 5.40
+              type: "transferência"
+              user_id: 1
+      responses:
+        '200':
+          description: Transação atualizada com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/Transaction'
+    delete:
+      summary: Remove uma transação (soft delete)
+      security:
+        - bearerAuth: []
+      tags:
+        - Transactions
+      responses:
+        '200':
+          description: Transação removida com sucesso
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
